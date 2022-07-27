@@ -48,6 +48,13 @@ a {
   text-decoration:none;
   color:inherit;
 }
+table {
+	border-collapse: collapse;
+	border-spacing: 0;
+}
+ol, ul {
+	list-style: none;
+}
 `;
 
 root.render(
