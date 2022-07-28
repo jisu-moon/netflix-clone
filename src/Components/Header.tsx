@@ -1,8 +1,9 @@
 import styled from 'styled-components';
-import { motion } from 'framer-motion';
+import { motion, useAnimation, useScroll } from 'framer-motion';
 import { Link, useLocation } from 'react-router-dom';
+import { useEffect, useRef, useState } from 'react';
 
-const Nav = styled.nav`
+const Nav = styled(motion.nav)`
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -42,12 +43,16 @@ const Item = styled.li<{ active: boolean }>`
   transition: 0.3s ease-in-out;
   font-weight: ${props => (props.active ? 700 : 400)};
   &:hover {
-    color: ${props => props.theme.white.veryDark};
+    color: ${props =>
+      props.active ? props.theme.white.lighter : props.theme.white.veryDark};
   }
   position: relative;
 `;
-const Search = styled.span`
+const Search = styled.div`
   color: #fff;
+  display: flex;
+  align-items: center;
+  position: relative;
   svg {
     height: 20px;
     fill: ${props => props.theme.white.darker};
@@ -64,7 +69,27 @@ const Circle = styled(motion.div)`
   right: 0;
   margin: 0 auto;
 `;
+const SearchInput = styled(motion.input)`
+  position: absolute;
+  transform: scaleX(0);
+  transform-origin: right center;
+  left: -230px;
+  border: 1px solid #fff;
+  padding: 10px 20px 10px 38px;
+  background: rgba(0, 0, 0, 0.5);
+  outline: 0;
+  color: #fff;
+  width: 250px;
+`;
 
+const navAni = {
+  top: {
+    background: 'rgba(0,0,0,0)',
+  },
+  scroll: {
+    background: 'rgba(0,0,0,1)',
+  },
+};
 const logoAni = {
   start: {
     pathLength: 0,
@@ -84,15 +109,28 @@ const menuData = [
     path: '/',
   },
   {
-    name: 'TV',
+    name: '시리즈',
     path: '/tv',
   },
 ];
 
 function Header() {
+  const [searchOpen, setSearchOpen] = useState(false);
+  const toggleSerach = () => {
+    setSearchOpen(prev => !prev);
+    inputRef.current.focus();
+  };
   const nowPath = useLocation().pathname;
+  const inputRef = useRef() as React.MutableRefObject<HTMLInputElement>;
+  const navAnimation = useAnimation(); // 이걸 사용해서 함수 내에서 애니메이션 가능 stop도 가능.
+  const { scrollY } = useScroll();
+  useEffect(() => {
+    scrollY.onChange(scroll => {
+      scroll > 80 ? navAnimation.start('scroll') : navAnimation.start('top');
+    });
+  }, [scrollY, navAnimation]);
   return (
-    <Nav>
+    <Nav variants={navAni} animate={navAnimation}>
       <Col>
         <Link to='/'>
           <Logo viewBox='0 -187 512 512'>
@@ -122,11 +160,23 @@ function Header() {
       </Col>
       <Col>
         <Search>
-          <svg viewBox='0 0 487.95 487.95'>
+          {searchOpen}
+          <SearchInput
+            animate={{ scaleX: searchOpen ? 1 : 0 }}
+            transition={{ type: 'lenear' }}
+            placeholder='제목, 사람, 장르'
+            ref={inputRef}
+          />
+          <motion.svg
+            animate={{ translateX: searchOpen ? -220 : 0 }}
+            onClick={toggleSerach}
+            transition={{ type: 'lenear' }}
+            viewBox='0 0 487.95 487.95'
+          >
             <g>
               <path d='M481.8,453l-140-140.1c27.6-33.1,44.2-75.4,44.2-121.6C386,85.9,299.5,0.2,193.1,0.2S0,86,0,191.4s86.5,191.1,192.9,191.1    c45.2,0,86.8-15.5,119.8-41.4l140.5,140.5c8.2,8.2,20.4,8.2,28.6,0C490,473.4,490,461.2,481.8,453z M41,191.4    c0-82.8,68.2-150.1,151.9-150.1s151.9,67.3,151.9,150.1s-68.2,150.1-151.9,150.1S41,274.1,41,191.4z' />
             </g>
-          </svg>
+          </motion.svg>
         </Search>
       </Col>
     </Nav>
@@ -134,5 +184,3 @@ function Header() {
 }
 
 export default Header;
-
-<svg></svg>;
