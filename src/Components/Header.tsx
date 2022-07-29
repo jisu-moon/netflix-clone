@@ -9,7 +9,6 @@ const Nav = styled(motion.nav)`
   align-items: center;
   height: 70px;
   padding: 0 60px;
-  background: #000;
   color: #fff;
   font-size: 14px;
   width: 100%;
@@ -57,6 +56,7 @@ const Search = styled.div`
     height: 20px;
     fill: ${props => props.theme.white.darker};
   }
+  cursor: pointer;
 `;
 const Circle = styled(motion.div)`
   width: 5px;
@@ -162,6 +162,7 @@ function Header() {
         <Search>
           {searchOpen}
           <SearchInput
+            initial={false}
             animate={{ scaleX: searchOpen ? 1 : 0 }}
             transition={{ type: 'lenear' }}
             placeholder='제목, 사람, 장르'
