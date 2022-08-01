@@ -25,7 +25,7 @@ export interface IGetMovies {
 export const getMovies = () => {
   return axios
     .get(
-      `${BASE_URL}/movie/now_playing?api_key=${API_KEY}&language=ko-KR&page=1&region=kr`,
+      `${BASE_URL}/movie/popular?api_key=${API_KEY}&language=ko-KR&page=1&region=kr`,
     )
     .then(res => res.data);
 };
