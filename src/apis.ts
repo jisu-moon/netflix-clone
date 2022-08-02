@@ -3,7 +3,7 @@ import axios from 'axios';
 const API_KEY = '9a11d3415c984ae77df020c63907ea0e';
 const BASE_URL = 'https://api.themoviedb.org/3';
 
-interface IMoviesResults {
+export interface IMoviesResults {
   backdrop_path: string;
   id: number;
   overview: string;
@@ -20,6 +20,7 @@ export interface IGetMovies {
   };
   total_pages: number;
   total_results: number;
+  genre_ids: number[];
 }
 
 export const getMovies = () => {
