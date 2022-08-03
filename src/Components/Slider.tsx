@@ -6,12 +6,22 @@ import { makeImagePath } from '../utils';
 
 const Wrapper = styled.div`
   width: 100%;
-  margin-top: -7%;
-  position: relative;
-  height: 200px;
+  margin-bottom: 10vh;
   &:hover button {
     opacity: 1;
   }
+`;
+const Cover = styled.div`
+  height: 200px;
+  position: relative;
+`;
+const SliderTitle = styled.h2`
+  margin-left: 35px;
+  font-size: 24px;
+  font-weight: bold;
+  color: #fff;
+  letter-spacing: 0.5px;
+  margin-bottom: 20px;
 `;
 const Row = styled(motion.div)`
   display: grid;
@@ -20,28 +30,30 @@ const Row = styled(motion.div)`
   margin-bottom: 10px;
   width: calc(100% - 70px);
   position: absolute;
-  top: 0;
+  top: 0px;
   left: 35px;
   height: 100%;
 `;
 const Box = styled(motion.div)<{ bgpath: string }>`
+  width: 100%;
   height: 100%;
   background: url(${props => props.bgpath});
   background-size: cover;
   background-position: center center;
-  transform-origin: center bottom;
+  transform-origin: center center;
   cursor: pointer;
+  border-radius: 5px;
   &:first-child {
-    transform-origin: left bottom;
+    transform-origin: left center;
   }
   &:last-child {
-    transform-origin: right bottom;
+    transform-origin: right center;
   }
 `;
 const ArrowBtn = styled.button`
   position: absolute;
   left: 0;
-  top: 0;
+  bottom: 0;
   z-index: 2;
   height: 100%;
   font-size: 24px;
@@ -115,9 +127,10 @@ const slideOffset = 6;
 
 interface IProps {
   data?: IGetMovies;
+  sliderTitle: string;
 }
 
-function Slider({ data }: IProps) {
+function Slider({ data, sliderTitle }: IProps) {
   const [back, setBack] = useState(false);
   const [index, setIndex] = useState(0);
   const [leaving, setLeaving] = useState(false);
@@ -141,53 +154,55 @@ function Slider({ data }: IProps) {
   };
   return (
     <Wrapper>
-      <ArrowBtn onClick={() => incraseSlide(true)}>&lt;</ArrowBtn>
-      <AnimatePresence
-        initial={false}
-        custom={back}
-        onExitComplete={toggleLeaving}
-      >
-        <Row
+      <SliderTitle>{sliderTitle}</SliderTitle>
+      <Cover>
+        <ArrowBtn onClick={() => incraseSlide(true)}>&lt;</ArrowBtn>
+        <AnimatePresence
+          initial={false}
           custom={back}
-          variants={rowVariants}
-          initial='initial'
-          animate='animate'
-          exit='exit'
-          transition={{
-            type: 'tween',
-            duration: 1,
-          }}
-          key={index}
+          onExitComplete={toggleLeaving}
         >
-          {data?.results
-            .slice(index * slideOffset, index * slideOffset + slideOffset)
-            .map((movie, slideIndex) => {
-              return (
-                <Box
-                  key={movie.id}
-                  bgpath={makeImagePath(
-                    movie.backdrop_path ?? movie.poster_path,
-                    'w500',
-                  )}
-                  variants={boxVariants}
-                  whileHover='hover'
-                  animate='init'
-                >
-                  <Overlay variants={OverlayVariants}>
-                    <h2>{movie.title}</h2>
-                    <h3>{index * slideOffset + 1 + slideIndex}</h3>
-                  </Overlay>
-                </Box>
-              );
-            })}
-        </Row>
-      </AnimatePresence>
-      <ArrowBtn
-        style={{ left: 'auto', right: 0 }}
-        onClick={() => incraseSlide(false)}
-      >
-        &gt;
-      </ArrowBtn>
+          <Row
+            custom={back}
+            variants={rowVariants}
+            initial='initial'
+            animate='animate'
+            exit='exit'
+            transition={{
+              type: 'tween',
+              duration: 1,
+            }}
+            key={index}
+          >
+            {data?.results
+              .slice(index * slideOffset, index * slideOffset + slideOffset)
+              .map(movie => {
+                return (
+                  <Box
+                    key={movie.id}
+                    bgpath={makeImagePath(
+                      movie.backdrop_path ?? movie.poster_path,
+                      'w500',
+                    )}
+                    variants={boxVariants}
+                    whileHover='hover'
+                    animate='init'
+                  >
+                    <Overlay variants={OverlayVariants}>
+                      <h2>{movie.title}</h2>
+                    </Overlay>
+                  </Box>
+                );
+              })}
+          </Row>
+        </AnimatePresence>
+        <ArrowBtn
+          style={{ left: 'auto', right: 0 }}
+          onClick={() => incraseSlide(false)}
+        >
+          &gt;
+        </ArrowBtn>
+      </Cover>
     </Wrapper>
   );
 }
