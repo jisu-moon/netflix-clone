@@ -84,6 +84,7 @@ function Home() {
     ['movies', 'nowPlaying'],
     getMovies,
   );
+  console.log(genreMovies);
   return (
     <Wrapper>
       {isLoading ? (
@@ -149,11 +150,12 @@ function Home() {
           </Banner>
           <Slider
             data={genreMovies}
-            sliderTitle='한국에서 가장 많이본 영화 TOP20'
+            sliderTitle='한국에서 가장 많이 본 영화 TOP20'
+            top={true}
           />
           <Slider
             data={genreMovies}
-            sliderTitle='한국에서 가장 많이본 영화 TOP20'
+            sliderTitle='한국에서 가장 많이 본 영화 TOP20'
           />
         </>
       )}

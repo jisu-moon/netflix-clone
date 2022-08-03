@@ -1,5 +1,5 @@
 import { AnimatePresence, motion } from 'framer-motion';
-import { useState } from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import { IGetMovies } from '../apis';
 import { makeImagePath } from '../utils';
@@ -27,7 +27,6 @@ const Row = styled(motion.div)`
   display: grid;
   grid-template-columns: repeat(6, 1fr);
   gap: 10px;
-  margin-bottom: 10px;
   width: calc(100% - 70px);
   position: absolute;
   top: 0px;
@@ -39,15 +38,15 @@ const Box = styled(motion.div)<{ bgpath: string }>`
   height: 100%;
   background: url(${props => props.bgpath});
   background-size: cover;
-  background-position: center center;
-  transform-origin: center center;
-  cursor: pointer;
+  background-position: center bottom;
+  transform-origin: center bottom;
   border-radius: 5px;
+  cursor: pointer;
   &:first-child {
-    transform-origin: left center;
+    transform-origin: left bottom;
   }
   &:last-child {
-    transform-origin: right center;
+    transform-origin: right bottom;
   }
 `;
 const ArrowBtn = styled.button`
@@ -73,12 +72,31 @@ const Overlay = styled(motion.div)`
   width: 100%;
   background: ${props => props.theme.black.lighter};
   position: absolute;
-  bottom: 0;
+  bottom: 5px;
   left: 0;
   opacity: 0;
   padding: 8px 5px;
+  transform: translateY(100%);
+  border-radius: 0 0 5px 5px;
   h2 {
     font-size: 14px;
+  }
+`;
+const IconCover = styled.div`
+  height: 100%;
+  position: relative;
+  div {
+    position: absolute;
+    right: 5px;
+    top: 0.1px;
+    background: ${props => props.theme.red};
+    padding: 5px;
+    font-weight: bold;
+    text-align: center;
+    border-radius: 0 0px 2px 15px;
+    p {
+      font-size: 8px;
+    }
   }
 `;
 
@@ -96,7 +114,6 @@ const rowVariants = {
 const boxVariants = {
   hover: {
     scale: 1.3,
-    y: -30,
     transition: {
       delay: 0.3,
       duration: 0.3,
@@ -105,7 +122,6 @@ const boxVariants = {
   },
   init: {
     scale: 1,
-    y: 0,
     transition: {
       duration: 0.3,
       type: 'tween',
@@ -128,9 +144,10 @@ const slideOffset = 6;
 interface IProps {
   data?: IGetMovies;
   sliderTitle: string;
+  top?: boolean;
 }
 
-function Slider({ data, sliderTitle }: IProps) {
+function Slider({ data, sliderTitle, top }: IProps) {
   const [back, setBack] = useState(false);
   const [index, setIndex] = useState(0);
   const [leaving, setLeaving] = useState(false);
@@ -176,7 +193,7 @@ function Slider({ data, sliderTitle }: IProps) {
           >
             {data?.results
               .slice(index * slideOffset, index * slideOffset + slideOffset)
-              .map(movie => {
+              .map((movie, slideIndex) => {
                 return (
                   <Box
                     key={movie.id}
@@ -188,9 +205,15 @@ function Slider({ data, sliderTitle }: IProps) {
                     whileHover='hover'
                     animate='init'
                   >
-                    <Overlay variants={OverlayVariants}>
-                      <h2>{movie.title}</h2>
-                    </Overlay>
+                    <IconCover>
+                      {top ? (
+                        <div>
+                          <p>TOP</p>
+                          <span>{index * slideOffset + slideIndex + 1}</span>
+                        </div>
+                      ) : null}
+                    </IconCover>
+                    <Overlay variants={OverlayVariants}>{movie.title}</Overlay>
                   </Box>
                 );
               })}
