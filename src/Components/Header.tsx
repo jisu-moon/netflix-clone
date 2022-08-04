@@ -87,7 +87,7 @@ const navAni = {
     background: 'rgba(0,0,0,0)',
   },
   scroll: {
-    background: 'rgba(0,0,0,1)',
+    background: 'rgba(20,20,20,1)',
   },
 };
 const logoAni = {

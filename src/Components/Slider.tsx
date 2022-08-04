@@ -70,7 +70,7 @@ const ArrowBtn = styled.button`
 `;
 const Overlay = styled(motion.div)`
   width: 100%;
-  background: ${props => props.theme.black.lighter};
+  background: ${props => props.theme.black.veryDark};
   position: absolute;
   bottom: 5px;
   left: 0;
@@ -93,12 +93,35 @@ const IconCover = styled.div`
     padding: 5px;
     font-weight: bold;
     text-align: center;
-    border-radius: 0 0px 2px 15px;
+    border-radius: 0 0px 4px 15px;
     p {
       font-size: 8px;
+      margin-bottom: -2px;
     }
   }
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
 `;
+const Title = styled.h2`
+  margin: 0 auto;
+  margin-bottom: 15px;
+  word-break: keep-all;
+  font-weight: bold;
+  text-shadow: 1px 1px 2px #000;
+  font-size: 16px;
+  padding: 0 15px;
+  text-align: center;
+`;
+const ButtonWrap = styled.div`
+  button {
+  }
+`;
+const PlayButton = styled.button`
+  background: ${props => props.theme.white.lighter};
+`;
+const PlusButton = styled.button``;
+const LikeButton = styled.button``;
 
 const rowVariants = {
   initial: (back: boolean) => ({
@@ -206,6 +229,7 @@ function Slider({ data, sliderTitle, top }: IProps) {
                     animate='init'
                   >
                     <IconCover>
+                      <Title>{movie.title}</Title>
                       {top ? (
                         <div>
                           <p>TOP</p>
@@ -213,7 +237,51 @@ function Slider({ data, sliderTitle, top }: IProps) {
                         </div>
                       ) : null}
                     </IconCover>
-                    <Overlay variants={OverlayVariants}>{movie.title}</Overlay>
+                    <Overlay variants={OverlayVariants}>
+                      <ButtonWrap>
+                        <PlayButton>
+                          <svg
+                            xmlns='http://www.w3.org/2000/svg'
+                            width='48px'
+                            height='48px'
+                            viewBox='0 0 48 48'
+                            version='1.1'
+                          >
+                            <g
+                              id='🔍-Product-Icons'
+                              stroke='none'
+                              strokeWidth='1'
+                              fill='none'
+                              fillRule='evenodd'
+                            >
+                              <g
+                                id='ic_fluent_play_48_filled'
+                                fill='#212121'
+                                fillRule='nonzero'
+                              >
+                                <path
+                                  d='M13.7501344,8.41212026 L38.1671892,21.1169293 C39.7594652,21.9454306 40.3786269,23.9078584 39.5501255,25.5001344 C39.2420737,26.0921715 38.7592263,26.5750189 38.1671892,26.8830707 L13.7501344,39.5878797 C12.1578584,40.4163811 10.1954306,39.7972194 9.36692926,38.2049434 C9.12586301,37.7416442 9,37.2270724 9,36.704809 L9,11.295191 C9,9.50026556 10.4550746,8.045191 12.25,8.045191 C12.6976544,8.045191 13.1396577,8.13766178 13.5485655,8.31589049 L13.7501344,8.41212026 Z'
+                                  id='🎨-Color'
+                                />
+                              </g>
+                            </g>
+                          </svg>
+                          <p>재생</p>
+                        </PlayButton>
+                        <PlusButton>+</PlusButton>
+                        <LikeButton>
+                          <svg
+                            xmlns='http://www.w3.org/2000/svg'
+                            width='96px'
+                            height='96px'
+                            viewBox='0 0 96 96'
+                          >
+                            <title />
+                            <path d='M78,24H71.8828C71.2559,12.82,67.2773,0,42,0a5.9966,5.9966,0,0,0-6,6c0,10.8809-.1128,20.3687-8.6917,30H6a5.9966,5.9966,0,0,0-6,6V90a5.9966,5.9966,0,0,0,6,6H78A18.02,18.02,0,0,0,96,78V42A18.02,18.02,0,0,0,78,24ZM12,48H24V84H12ZM84,78a6.0078,6.0078,0,0,1-6,6H36V44.4023c9.9258-10.8867,11.6426-21.9257,11.9355-32.121C60,13.5938,60,19.5117,60,30a5.9966,5.9966,0,0,0,6,6H78a6.0078,6.0078,0,0,1,6,6Z' />
+                          </svg>
+                        </LikeButton>
+                      </ButtonWrap>
+                    </Overlay>
                   </Box>
                 );
               })}

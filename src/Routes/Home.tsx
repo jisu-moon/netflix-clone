@@ -25,7 +25,7 @@ const Banner = styled.div<{ bgPath: string }>`
   flex-direction: column;
   justify-content: center;
   padding: 60px;
-  background: linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 1)),
+  background: linear-gradient(rgba(0, 0, 0, 0), rgba(20, 20, 20, 1)),
     url(${props => props.bgPath});
   background-size: cover;
   background-position: center center;
