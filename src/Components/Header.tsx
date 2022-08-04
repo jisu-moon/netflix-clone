@@ -15,6 +15,7 @@ const Nav = styled(motion.nav)`
   position: fixed;
   top: 0;
   overflow: hidden;
+  z-index: 999;
 `;
 const Col = styled.div`
   display: flex;

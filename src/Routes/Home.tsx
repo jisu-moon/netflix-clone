@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { getTopMovies, IGetMovies } from '../apis';
 import Slider from '../Components/Slider';
 import { makeImagePath } from '../utils';
+import VideoWrap from '../Components/Video';
 
 const Wrapper = styled.div`
   width: 100vw;
@@ -29,12 +30,15 @@ const Banner = styled.div<{ bgPath: string }>`
     url(${props => props.bgPath});
   background-size: cover;
   background-position: center center;
+  position: relative;
 `;
 const BannerTitle = styled.h2`
   font-size: 64px;
   font-weight: bold;
   margin-bottom: 10px;
   color: #fff;
+  position: static;
+  z-index: 2;
 `;
 const BannerOverview = styled.p`
   font-size: 18px;
@@ -43,11 +47,15 @@ const BannerOverview = styled.p`
   padding-left: 2px;
   word-break: keep-all;
   color: #fff;
+  position: static;
+  z-index: 2;
 `;
 const BannerButtonLayer = styled.div`
   margin-top: 30px;
   display: flex;
   gap: 10px;
+  position: static;
+  z-index: 2;
   button {
     display: flex;
     align-items: center;
@@ -77,17 +85,16 @@ const InfoButton = styled.button`
   }
 `;
 
-const randomRank = Math.floor(Math.random() * 5);
+const randomRank = Math.floor(Math.random() * 6);
 
 function Home() {
-  const { data: topMovies, isLoading } = useQuery<IGetMovies>(
+  const { data: topMovies, isLoading: moviesLoading } = useQuery<IGetMovies>(
     ['movies', 'nowPlaying'],
     getTopMovies,
   );
-  console.log(topMovies);
   return (
     <Wrapper>
-      {isLoading ? (
+      {moviesLoading ? (
         <Loading>Loading...</Loading>
       ) : (
         <>
@@ -147,6 +154,7 @@ function Home() {
                 <p>상세 정보</p>
               </InfoButton>
             </BannerButtonLayer>
+            <VideoWrap id={topMovies?.results[randomRank].id} />
           </Banner>
           <Slider
             data={topMovies}

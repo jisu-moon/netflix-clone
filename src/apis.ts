@@ -33,6 +33,14 @@ export interface IGenres {
     },
   ];
 }
+export interface IVideo {
+  id: number;
+  results: [
+    {
+      key: string;
+    },
+  ];
+}
 
 export const getTopMovies = () => {
   return axios
@@ -46,5 +54,10 @@ export const getGenres = () => {
     .get(
       `${BASE_URL}/genre/movie/list?api_key=${API_KEY}&language=ko-KR&page=1`,
     )
+    .then(res => res.data);
+};
+export const getVideo = (id: number | '') => {
+  return axios
+    .get(`${BASE_URL}/movie/${id}/videos?api_key=${API_KEY}&language=ko-KR`)
     .then(res => res.data);
 };

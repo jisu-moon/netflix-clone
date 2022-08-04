@@ -15,7 +15,7 @@ const Wrapper = styled.div`
   }
 `;
 const Cover = styled.div`
-  height: 200px;
+  padding-bottom: 10%;
   position: relative;
 `;
 const SliderTitle = styled.h2`
