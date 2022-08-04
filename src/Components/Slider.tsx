@@ -1,8 +1,11 @@
+import { useQuery } from '@tanstack/react-query';
 import { AnimatePresence, motion } from 'framer-motion';
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { IGetMovies } from '../apis';
+import { getGenres, IGenres, IGetMovies } from '../apis';
 import { makeImagePath } from '../utils';
+
+const slideOffset = 6;
 
 const Wrapper = styled.div`
   width: 100%;
@@ -68,21 +71,26 @@ const ArrowBtn = styled.button`
     font-size: 32px;
   }
 `;
-const Overlay = styled(motion.div)`
+const Info = styled(motion.div)`
   width: 100%;
   background: ${props => props.theme.black.veryDark};
   position: absolute;
   bottom: 5px;
   left: 0;
   opacity: 0;
-  padding: 8px 5px;
+  padding: 12px;
   transform: translateY(100%);
+  box-shadow: 0px 2px 10px #000;
   border-radius: 0 0 5px 5px;
+  z-index: -1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
   h2 {
     font-size: 14px;
   }
 `;
-const IconCover = styled.div`
+const IconWrap = styled.div`
   height: 100%;
   position: relative;
   div {
@@ -114,14 +122,97 @@ const Title = styled.h2`
   text-align: center;
 `;
 const ButtonWrap = styled.div`
+  display: flex;
+  justify-content: flex-start;
+  gap: 6px;
   button {
+    cursor: pointer;
+    font-size: 20px;
+    border-radius: 20px;
+    width: 33px;
+    height: 33px;
+    color: #fff;
+    &:hover {
+      opacity: 0.5;
+    }
+    svg {
+      height: auto;
+      fill: #fff;
+    }
   }
 `;
 const PlayButton = styled.button`
   background: ${props => props.theme.white.lighter};
+  border: 0;
+  position: relative;
+  svg {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-46%, -50%);
+    width: 20px;
+  }
 `;
-const PlusButton = styled.button``;
-const LikeButton = styled.button``;
+const PlusButton = styled.button`
+  background-color: transparent;
+  border: 2px solid ${props => props.theme.white.veryDark};
+`;
+const LikeButton = styled.button`
+  background-color: transparent;
+  border: 2px solid ${props => props.theme.white.veryDark};
+  position: relative;
+  svg {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 12px;
+  }
+`;
+const VideoDataWrap = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  p {
+    border: 0.5px solid ${props => props.theme.white.veryDark};
+    font-size: 10px;
+    padding: 1px 5px;
+    border-radius: 4px;
+    color: #fff;
+    font-weight: 300;
+  }
+`;
+const StarLating = styled.span`
+  color: #46d369;
+  font-weight: bold;
+  font-size: 12px;
+`;
+const Adult = styled.span<{ adult: boolean }>`
+  font-size: 16px;
+  font-weight: bold;
+  padding: 3px;
+  color: #fff;
+  background: ${props => (props.adult ? '#9f2930' : '#cf723b')};
+  border-radius: 3px;
+`;
+const ReleaseDate = styled.span`
+  font-size: 12px;
+  font-weight: 500;
+`;
+const GenresWrap = styled.div`
+  span {
+    font-size: 12px;
+    color: #fff;
+    &:after {
+      content: '•';
+      margin: 0 3px;
+      color: ${props => props.theme.white.veryDark};
+    }
+    &:last-child:after {
+      content: '';
+    }
+  }
+`;
 
 const rowVariants = {
   initial: (back: boolean) => ({
@@ -151,7 +242,7 @@ const boxVariants = {
     },
   },
 };
-const OverlayVariants = {
+const InfoVariants = {
   hover: {
     opacity: 1,
     transition: {
@@ -161,9 +252,6 @@ const OverlayVariants = {
     },
   },
 };
-
-const slideOffset = 6;
-
 interface IProps {
   data?: IGetMovies;
   sliderTitle: string;
@@ -171,6 +259,10 @@ interface IProps {
 }
 
 function Slider({ data, sliderTitle, top }: IProps) {
+  const { data: genres, isLoading } = useQuery<IGenres>(
+    ['movies', 'Genres'],
+    getGenres,
+  );
   const [back, setBack] = useState(false);
   const [index, setIndex] = useState(0);
   const [leaving, setLeaving] = useState(false);
@@ -228,7 +320,7 @@ function Slider({ data, sliderTitle, top }: IProps) {
                     whileHover='hover'
                     animate='init'
                   >
-                    <IconCover>
+                    <IconWrap>
                       <Title>{movie.title}</Title>
                       {top ? (
                         <div>
@@ -236,8 +328,8 @@ function Slider({ data, sliderTitle, top }: IProps) {
                           <span>{index * slideOffset + slideIndex + 1}</span>
                         </div>
                       ) : null}
-                    </IconCover>
-                    <Overlay variants={OverlayVariants}>
+                    </IconWrap>
+                    <Info variants={InfoVariants}>
                       <ButtonWrap>
                         <PlayButton>
                           <svg
@@ -266,7 +358,6 @@ function Slider({ data, sliderTitle, top }: IProps) {
                               </g>
                             </g>
                           </svg>
-                          <p>재생</p>
                         </PlayButton>
                         <PlusButton>+</PlusButton>
                         <LikeButton>
@@ -281,7 +372,25 @@ function Slider({ data, sliderTitle, top }: IProps) {
                           </svg>
                         </LikeButton>
                       </ButtonWrap>
-                    </Overlay>
+                      <VideoDataWrap>
+                        <StarLating>{movie.vote_average * 10}% 일치</StarLating>
+                        <Adult adult={movie.adult}>
+                          {movie.adult ? '18' : '15'}
+                        </Adult>
+                        <ReleaseDate>{movie.release_date}</ReleaseDate>
+                        <p>HD</p>
+                      </VideoDataWrap>
+                      {isLoading ? null : (
+                        <GenresWrap>
+                          {movie.genre_ids.map(id => {
+                            const result = genres?.genres.find(
+                              genre => genre.id === id,
+                            );
+                            return <span key={result?.id}>{result?.name}</span>;
+                          })}
+                        </GenresWrap>
+                      )}
+                    </Info>
                   </Box>
                 );
               })}

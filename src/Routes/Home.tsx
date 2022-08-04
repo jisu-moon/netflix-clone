@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import styled from 'styled-components';
-import { getMovies, IGetMovies } from '../apis';
+import { getTopMovies, IGetMovies } from '../apis';
 import Slider from '../Components/Slider';
 import { makeImagePath } from '../utils';
 
@@ -80,11 +80,11 @@ const InfoButton = styled.button`
 const randomRank = Math.floor(Math.random() * 5);
 
 function Home() {
-  const { data: genreMovies, isLoading } = useQuery<IGetMovies>(
+  const { data: topMovies, isLoading } = useQuery<IGetMovies>(
     ['movies', 'nowPlaying'],
-    getMovies,
+    getTopMovies,
   );
-  console.log(genreMovies);
+  console.log(topMovies);
   return (
     <Wrapper>
       {isLoading ? (
@@ -93,12 +93,12 @@ function Home() {
         <>
           <Banner
             bgPath={makeImagePath(
-              genreMovies?.results[randomRank].backdrop_path || '',
+              topMovies?.results[randomRank].backdrop_path || '',
             )}
           >
-            <BannerTitle>{genreMovies?.results[randomRank].title}</BannerTitle>
+            <BannerTitle>{topMovies?.results[randomRank].title}</BannerTitle>
             <BannerOverview>
-              {genreMovies?.results[randomRank].overview}
+              {topMovies?.results[randomRank].overview}
             </BannerOverview>
             <BannerButtonLayer>
               <PlayButton>
@@ -149,12 +149,12 @@ function Home() {
             </BannerButtonLayer>
           </Banner>
           <Slider
-            data={genreMovies}
+            data={topMovies}
             sliderTitle='한국에서 가장 많이 본 영화 TOP20'
             top={true}
           />
           <Slider
-            data={genreMovies}
+            data={topMovies}
             sliderTitle='한국에서 가장 많이 본 영화 TOP20'
           />
         </>
