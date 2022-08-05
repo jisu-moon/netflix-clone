@@ -13,6 +13,7 @@ const Wrapper = styled.div`
   &:hover button {
     opacity: 1;
   }
+  position: relative;
 `;
 const Cover = styled.div`
   padding-bottom: 10%;
@@ -43,8 +44,9 @@ const Box = styled(motion.div)<{ bgpath: string }>`
   background-size: cover;
   background-position: center bottom;
   transform-origin: center bottom;
-  border-radius: 5px;
+  border-radius: 2px;
   cursor: pointer;
+  position: relative;
   &:first-child {
     transform-origin: left bottom;
   }
@@ -78,17 +80,19 @@ const Info = styled(motion.div)`
   bottom: 5px;
   left: 0;
   opacity: 0;
-  padding: 12px;
+  padding: 22px 12px;
   transform: translateY(100%);
   box-shadow: 0px 2px 10px #000;
   border-radius: 0 0 5px 5px;
-  z-index: -1;
+  z-index: -5;
   display: flex;
   flex-direction: column;
   gap: 8px;
+  cursor: default;
   h2 {
     font-size: 14px;
   }
+  display: none;
 `;
 const IconWrap = styled.div`
   height: 100%;
@@ -118,7 +122,7 @@ const Title = styled.h2`
   font-weight: bold;
   text-shadow: 1px 1px 2px #000;
   font-size: 16px;
-  padding: 0 15px;
+  padding: 0 5%;
   text-align: center;
 `;
 const ButtonWrap = styled.div`
@@ -229,6 +233,7 @@ const boxVariants = {
   hover: {
     scale: 1.3,
     y: -40,
+    zIndex: 2,
     transition: {
       delay: 0.3,
       duration: 0.3,
@@ -238,7 +243,11 @@ const boxVariants = {
   init: {
     scale: 1,
     y: 0,
+    zIndex: 1,
     transition: {
+      zIndex: {
+        delay: 0.3,
+      },
       duration: 0.3,
       type: 'tween',
     },
@@ -247,10 +256,20 @@ const boxVariants = {
 const InfoVariants = {
   hover: {
     opacity: 1,
+    display: 'flex',
     transition: {
       delay: 0.3,
       duaration: 0.1,
       type: 'tween',
+    },
+  },
+  init: {
+    display: 'none',
+    opacity: 0,
+    transition: {
+      display: {
+        delay: 0.3,
+      },
     },
   },
 };

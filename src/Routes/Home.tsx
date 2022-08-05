@@ -110,7 +110,6 @@ function Home() {
     ['movies', 'new'],
     getNewMovie,
   );
-  console.log(newMovie);
   return (
     <Wrapper>
       {moviesLoading && trendMovieLoading && ratedMovieLoading ? (

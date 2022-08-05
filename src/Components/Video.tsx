@@ -44,7 +44,7 @@ function VideoWrap({ id }: any) {
   useEffect(() => {
     setTimeout(() => {
       setShow(true);
-    }, 5000);
+    }, 3500);
   }, [isLoading]);
   return show ? (
     <Wrapper
