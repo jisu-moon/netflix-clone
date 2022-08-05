@@ -9,7 +9,7 @@ const slideOffset = 6;
 
 const Wrapper = styled.div`
   width: 100%;
-  margin-bottom: 10vh;
+  margin-bottom: 5vh;
   &:hover button {
     opacity: 1;
   }
@@ -228,6 +228,7 @@ const rowVariants = {
 const boxVariants = {
   hover: {
     scale: 1.3,
+    y: -40,
     transition: {
       delay: 0.3,
       duration: 0.3,
@@ -236,6 +237,7 @@ const boxVariants = {
   },
   init: {
     scale: 1,
+    y: 0,
     transition: {
       duration: 0.3,
       type: 'tween',
@@ -321,7 +323,7 @@ function Slider({ data, sliderTitle, top }: IProps) {
                     animate='init'
                   >
                     <IconWrap>
-                      <Title>{movie.title}</Title>
+                      <Title>{movie.title ?? movie.name}</Title>
                       {top ? (
                         <div>
                           <p>TOP</p>
@@ -373,7 +375,9 @@ function Slider({ data, sliderTitle, top }: IProps) {
                         </LikeButton>
                       </ButtonWrap>
                       <VideoDataWrap>
-                        <StarLating>{movie.vote_average * 10}% 일치</StarLating>
+                        <StarLating>
+                          {Math.round(movie.vote_average * 10)}% 일치
+                        </StarLating>
                         <Adult adult={movie.adult}>
                           {movie.adult ? '18' : '15'}
                         </Adult>

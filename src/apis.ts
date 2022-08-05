@@ -13,6 +13,7 @@ interface IMoviesResults {
   vote_average: number;
   adult: boolean;
   genre_ids: number[];
+  name: string;
 }
 export interface IGetMovies {
   page: number;
@@ -59,5 +60,20 @@ export const getGenres = () => {
 export const getVideo = (id: number | '') => {
   return axios
     .get(`${BASE_URL}/movie/${id}/videos?api_key=${API_KEY}&language=ko-KR`)
+    .then(res => res.data);
+};
+export const getTrendMovie = () => {
+  return axios
+    .get(`${BASE_URL}/trending/movie/day?api_key=${API_KEY}&language=ko-KR`)
+    .then(res => res.data);
+};
+export const getRatedMovie = () => {
+  return axios
+    .get(`${BASE_URL}/movie/top_rated?api_key=${API_KEY}&language=ko-KR`)
+    .then(res => res.data);
+};
+export const getNewMovie = () => {
+  return axios
+    .get(`${BASE_URL}/movie/upcoming?api_key=${API_KEY}&language=ko-KR`)
     .then(res => res.data);
 };

@@ -1,9 +1,18 @@
 import { useQuery } from '@tanstack/react-query';
 import styled from 'styled-components';
-import { getTopMovies, IGetMovies } from '../apis';
+import {
+  getNewMovie,
+  getRatedMovie,
+  getTopMovies,
+  getTrendMovie,
+  IGetMovies,
+} from '../apis';
 import Slider from '../Components/Slider';
 import { makeImagePath } from '../utils';
 import VideoWrap from '../Components/Video';
+import { homeVideoState } from '../atoms';
+import { useRecoilValue } from 'recoil';
+import { motion } from 'framer-motion';
 
 const Wrapper = styled.div`
   width: 100vw;
@@ -32,15 +41,14 @@ const Banner = styled.div<{ bgPath: string }>`
   background-position: center center;
   position: relative;
 `;
-const BannerTitle = styled.h2`
-  font-size: 64px;
+const BannerTitle = styled(motion.h2)`
   font-weight: bold;
   margin-bottom: 10px;
   color: #fff;
   position: static;
   z-index: 2;
 `;
-const BannerOverview = styled.p`
+const BannerOverview = styled(motion.p)`
   font-size: 18px;
   width: 50%;
   line-height: 1.3;
@@ -49,6 +57,7 @@ const BannerOverview = styled.p`
   color: #fff;
   position: static;
   z-index: 2;
+  transform-origin: bottom;
 `;
 const BannerButtonLayer = styled.div`
   margin-top: 30px;
@@ -88,13 +97,23 @@ const InfoButton = styled.button`
 const randomRank = Math.floor(Math.random() * 6);
 
 function Home() {
+  const videoShow = useRecoilValue(homeVideoState);
   const { data: topMovies, isLoading: moviesLoading } = useQuery<IGetMovies>(
-    ['movies', 'nowPlaying'],
+    ['movies', 'top'],
     getTopMovies,
   );
+  const { data: trendMovie, isLoading: trendMovieLoading } =
+    useQuery<IGetMovies>(['movies', 'Trend'], getTrendMovie);
+  const { data: ratedMovie, isLoading: ratedMovieLoading } =
+    useQuery<IGetMovies>(['movies', 'rated'], getRatedMovie);
+  const { data: newMovie, isLoading: newMovieLoading } = useQuery<IGetMovies>(
+    ['movies', 'new'],
+    getNewMovie,
+  );
+  console.log(newMovie);
   return (
     <Wrapper>
-      {moviesLoading ? (
+      {moviesLoading && trendMovieLoading && ratedMovieLoading ? (
         <Loading>Loading...</Loading>
       ) : (
         <>
@@ -103,8 +122,30 @@ function Home() {
               topMovies?.results[randomRank].backdrop_path || '',
             )}
           >
-            <BannerTitle>{topMovies?.results[randomRank].title}</BannerTitle>
-            <BannerOverview>
+            <BannerTitle
+              initial={false}
+              animate={{
+                y: videoShow ? 100 : 0,
+                fontSize: videoShow ? '48px' : '64px',
+              }}
+              transition={{
+                duration: 0.5,
+                delay: 2,
+              }}
+            >
+              {topMovies?.results[randomRank].title}
+            </BannerTitle>
+            <BannerOverview
+              initial={false}
+              animate={{
+                y: videoShow ? 100 : 0,
+                opacity: videoShow ? 0 : 1,
+              }}
+              transition={{
+                duration: 0.5,
+                delay: 2,
+              }}
+            >
               {topMovies?.results[randomRank].overview}
             </BannerOverview>
             <BannerButtonLayer>
@@ -158,13 +199,12 @@ function Home() {
           </Banner>
           <Slider
             data={topMovies}
-            sliderTitle='한국에서 가장 많이 본 영화 TOP20'
+            sliderTitle='오늘 대한민국의 TOP 10 영화'
             top={true}
           />
-          <Slider
-            data={topMovies}
-            sliderTitle='한국에서 가장 많이 본 영화 TOP20'
-          />
+          <Slider data={trendMovie} sliderTitle='지금 뜨는 컨텐츠' />
+          <Slider data={ratedMovie} sliderTitle='보고 또 봐도 좋은 명작' />
+          <Slider data={newMovie} sliderTitle='곧 개봉 예정' />
         </>
       )}
     </Wrapper>
