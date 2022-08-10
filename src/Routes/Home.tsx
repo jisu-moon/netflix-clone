@@ -11,10 +11,11 @@ import Slider from '../Components/Slider';
 import { makeImagePath } from '../utils';
 import VideoWrap from '../Components/Video';
 import { homeVideoState } from '../atoms';
-import { useRecoilValue } from 'recoil';
+import { useRecoilState, useRecoilValue } from 'recoil';
 import { motion } from 'framer-motion';
+import { useEffect } from 'react';
 
-const Wrapper = styled.div`
+const Wrapper = styled(motion.div)`
   width: 100vw;
   overflow: hidden;
 `;
@@ -97,7 +98,7 @@ const InfoButton = styled.button`
 const randomRank = Math.floor(Math.random() * 6);
 
 function Home() {
-  const videoShow = useRecoilValue(homeVideoState);
+  const [videoShow, setVideoShow] = useRecoilState(homeVideoState);
   const { data: topMovies, isLoading: moviesLoading } = useQuery<IGetMovies>(
     ['movies', 'top'],
     getTopMovies,
@@ -110,9 +111,20 @@ function Home() {
     ['movies', 'new'],
     getNewMovie,
   );
+  useEffect(() => {
+    setVideoShow(false);
+  }, []);
   return (
-    <Wrapper>
-      {moviesLoading && trendMovieLoading && ratedMovieLoading ? (
+    <Wrapper
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.5 }}
+    >
+      {moviesLoading &&
+      trendMovieLoading &&
+      ratedMovieLoading &&
+      newMovieLoading ? (
         <Loading>Loading...</Loading>
       ) : (
         <>
@@ -124,12 +136,12 @@ function Home() {
             <BannerTitle
               initial={false}
               animate={{
-                y: videoShow ? 100 : 0,
-                fontSize: videoShow ? '48px' : '64px',
+                y: videoShow ? 80 : 0,
+                fontSize: videoShow ? '32px' : '64px',
               }}
               transition={{
                 duration: 0.5,
-                delay: 2,
+                delay: videoShow ? 2 : 0,
               }}
             >
               {topMovies?.results[randomRank].title}
@@ -141,8 +153,8 @@ function Home() {
                 opacity: videoShow ? 0 : 1,
               }}
               transition={{
+                delay: videoShow ? 2 : 0,
                 duration: 0.5,
-                delay: 2,
               }}
             >
               {topMovies?.results[randomRank].overview}

@@ -52,7 +52,7 @@ function VideoWrap({ id }: any) {
       initial='initial'
       animate='animate'
       exit='exit'
-      transition={{ duration: 1 }}
+      transition={{ duration: 0.8 }}
     >
       <ReactPlayer
         url={makeVideoPath(data?.results[data?.results.length - 1].key || '')}
