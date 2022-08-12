@@ -102,10 +102,10 @@ const IconWrap = styled.div`
     right: 5px;
     top: 0.1px;
     background: ${props => props.theme.red};
-    padding: 5px;
+    padding: 5px 2px;
     font-weight: bold;
     text-align: center;
-    border-radius: 0 0px 4px 15px;
+    clip-path: polygon(0 0, 100% 0%, 100% 100%, 0 81%);
     p {
       font-size: 8px;
       margin-bottom: -2px;
