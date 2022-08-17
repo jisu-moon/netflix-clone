@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { AnimatePresence, motion } from 'framer-motion';
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { getGenres, IGenres, IGetMovies } from '../apis';
 import { makeImagePath } from '../utils';
@@ -129,6 +130,8 @@ const ButtonWrap = styled.div`
   display: flex;
   justify-content: flex-start;
   gap: 6px;
+  margin-bottom: 5px;
+  position: relative;
   button {
     cursor: pointer;
     font-size: 20px;
@@ -159,11 +162,11 @@ const PlayButton = styled.button`
 `;
 const PlusButton = styled.button`
   background-color: transparent;
-  border: 2px solid ${props => props.theme.white.veryDark};
+  border: 1px solid ${props => props.theme.white.veryDark};
 `;
 const LikeButton = styled.button`
   background-color: transparent;
-  border: 2px solid ${props => props.theme.white.veryDark};
+  border: 1px solid ${props => props.theme.white.veryDark};
   position: relative;
   svg {
     position: absolute;
@@ -190,6 +193,19 @@ const StarLating = styled.span`
   color: #46d369;
   font-weight: bold;
   font-size: 12px;
+`;
+const DetailButton = styled.button`
+  background: transparent;
+  border: 1px solid #b3b3b3;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  right: 0;
+  svg {
+    width: 12px;
+    transform: rotate(180deg);
+  }
 `;
 const Adult = styled.span<{ adult: boolean }>`
   font-size: 16px;
@@ -305,6 +321,8 @@ function Slider({ data, sliderTitle, top }: IProps) {
       );
     }
   };
+  const navigate = useNavigate();
+  const onClick = (id: string) => navigate(`/detail/${id + sliderTitle}`);
   return (
     <Wrapper>
       <SliderTitle>{sliderTitle}</SliderTitle>
@@ -340,6 +358,7 @@ function Slider({ data, sliderTitle, top }: IProps) {
                     variants={boxVariants}
                     whileHover='hover'
                     animate='init'
+                    layoutId={movie.id + sliderTitle}
                   >
                     <IconWrap>
                       <Title>{movie.title ?? movie.name}</Title>
@@ -392,6 +411,36 @@ function Slider({ data, sliderTitle, top }: IProps) {
                             <path d='M78,24H71.8828C71.2559,12.82,67.2773,0,42,0a5.9966,5.9966,0,0,0-6,6c0,10.8809-.1128,20.3687-8.6917,30H6a5.9966,5.9966,0,0,0-6,6V90a5.9966,5.9966,0,0,0,6,6H78A18.02,18.02,0,0,0,96,78V42A18.02,18.02,0,0,0,78,24ZM12,48H24V84H12ZM84,78a6.0078,6.0078,0,0,1-6,6H36V44.4023c9.9258-10.8867,11.6426-21.9257,11.9355-32.121C60,13.5938,60,19.5117,60,30a5.9966,5.9966,0,0,0,6,6H78a6.0078,6.0078,0,0,1,6,6Z' />
                           </svg>
                         </LikeButton>
+                        <DetailButton onClick={() => onClick(movie.id + '')}>
+                          <svg
+                            xmlns='http://www.w3.org/2000/svg'
+                            version='1.1'
+                            id='Layer_1'
+                            x='0px'
+                            y='0px'
+                            viewBox='0 0 330 330'
+                          >
+                            <path
+                              id='XMLID_224_'
+                              d='M325.606,229.393l-150.004-150C172.79,76.58,168.974,75,164.996,75c-3.979,0-7.794,1.581-10.607,4.394  l-149.996,150c-5.858,5.858-5.858,15.355,0,21.213c5.857,5.857,15.355,5.858,21.213,0l139.39-139.393l139.397,139.393  C307.322,253.536,311.161,255,315,255c3.839,0,7.678-1.464,10.607-4.394C331.464,244.748,331.464,235.251,325.606,229.393z'
+                            />
+                            <g></g>
+                            <g></g>
+                            <g></g>
+                            <g></g>
+                            <g></g>
+                            <g></g>
+                            <g></g>
+                            <g></g>
+                            <g></g>
+                            <g></g>
+                            <g></g>
+                            <g></g>
+                            <g></g>
+                            <g></g>
+                            <g></g>
+                          </svg>
+                        </DetailButton>
                       </ButtonWrap>
                       <VideoDataWrap>
                         <StarLating>

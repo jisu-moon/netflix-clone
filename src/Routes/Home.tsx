@@ -11,9 +11,11 @@ import Slider from '../Components/Slider';
 import { makeImagePath } from '../utils';
 import VideoWrap from '../Components/Video';
 import { homeVideoState } from '../atoms';
-import { useRecoilState, useRecoilValue } from 'recoil';
+import { useRecoilState } from 'recoil';
 import { motion } from 'framer-motion';
 import { useEffect } from 'react';
+import { useMatch } from 'react-router-dom';
+import ContentDetail from '../Components/ContentDetail';
 
 const Wrapper = styled(motion.div)`
   width: 100vw;
@@ -111,9 +113,8 @@ function Home() {
     ['movies', 'new'],
     getNewMovie,
   );
-  useEffect(() => {
-    setVideoShow(false);
-  }, []);
+  const contentDetailMatch = useMatch('/detail/:id');
+  useEffect(() => setVideoShow(false), []);
   return (
     <Wrapper
       initial={{ opacity: 0 }}
@@ -210,12 +211,15 @@ function Home() {
           </Banner>
           <Slider
             data={topMovies}
-            sliderTitle='오늘 대한민국의 TOP 10 영화'
+            sliderTitle='오늘 대한민국의 TOP 20 영화'
             top={true}
           />
           <Slider data={trendMovie} sliderTitle='지금 뜨는 컨텐츠' />
           <Slider data={ratedMovie} sliderTitle='보고 또 봐도 좋은 명작' />
           <Slider data={newMovie} sliderTitle='곧 개봉 예정' />
+          {contentDetailMatch ? (
+            <ContentDetail id={contentDetailMatch.params.id} />
+          ) : null}
         </>
       )}
     </Wrapper>
