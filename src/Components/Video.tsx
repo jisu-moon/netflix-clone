@@ -42,6 +42,7 @@ function VideoWrap({ id }: any) {
     getVideo(id),
   );
   useEffect(() => {
+    if (data?.results[0] === undefined) return;
     setTimeout(() => {
       setShow(true);
     }, 3500);
